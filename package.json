@@ -1,0 +1,16 @@
+{
+  "name": "exam-system",
+  "version": "1.0.0",
+  "description": "初一科技期末考试系统",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["exam", "education"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}

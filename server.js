@@ -11,6 +11,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
+// 题目数据文件
+const QUESTIONS_FILE = path.join(__dirname, 'questions.json');
+
 // 成绩数据文件
 const SCORES_FILE = path.join(__dirname, 'scores.json');
 const BACKUP_FILE = path.join(__dirname, 'scores_backup.json');
@@ -78,6 +81,21 @@ function safeWriteFile(data) {
         }
     });
 }
+
+// 获取题目API
+app.get('/api/questions', (req, res) => {
+    try {
+        if (!fs.existsSync(QUESTIONS_FILE)) {
+            return res.status(404).json({ error: '题目文件不存在' });
+        }
+        
+        const questions = JSON.parse(fs.readFileSync(QUESTIONS_FILE, 'utf8'));
+        res.json(questions);
+    } catch (error) {
+        console.error('获取题目错误：', error);
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
 
 // 验证学生数据
 function validateStudentData(data) {

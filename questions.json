@@ -1,0 +1,236 @@
+{
+  "choiceQuestions": [
+    {
+      "question": "下列哪种技术属于人工智能的应用？",
+      "options": ["A. 3D打印", "B. 语音识别", "C. 传统机械制造", "D. 手工绘图"],
+      "answer": "B"
+    },
+    {
+      "question": "在编程中，变量主要用于什么？",
+      "options": ["A. 存储数据", "B. 显示图片", "C. 播放音乐", "D. 连接网络"],
+      "answer": "A"
+    },
+    {
+      "question": "下列哪个设备不属于输入设备？",
+      "options": ["A. 键盘", "B. 鼠标", "C. 打印机", "D. 摄像头"],
+      "answer": "C"
+    },
+    {
+      "question": "下列哪种编程语言适合初学者学习？",
+      "options": ["A. Python", "B. 汇编语言", "C. 机器语言", "D. 二进制代码"],
+      "answer": "A"
+    },
+    {
+      "question": "3D打印技术的原理是？",
+      "options": ["A. 减材制造", "B. 增材制造", "C. 等材制造", "D. 变材制造"],
+      "answer": "B"
+    },
+    {
+      "question": "下列哪个不是操作系统的功能？",
+      "options": ["A. 管理硬件资源", "B. 提供用户界面", "C. 制作游戏", "D. 管理文件"],
+      "answer": "C"
+    },
+    {
+      "question": "在Scratch编程中，积木块的作用是？",
+      "options": ["A. 装饰界面", "B. 实现程序逻辑", "C. 显示背景", "D. 播放声音"],
+      "answer": "B"
+    },
+    {
+      "question": "下列哪种技术属于虚拟现实（VR）？",
+      "options": ["A. 二维动画", "B. 三维建模", "C. 沉浸式体验", "D. 平面设计"],
+      "answer": "C"
+    },
+    {
+      "question": "网络安全中，密码的作用是？",
+      "options": ["A. 装饰账户", "B. 保护账户安全", "C. 显示身份", "D. 连接网络"],
+      "answer": "B"
+    },
+    {
+      "question": "计算机中存储数据的最小单位是？",
+      "options": ["A. 字节", "B. 位", "C. KB", "D. MB"],
+      "answer": "B"
+    },
+    {
+      "question": "下列哪个不是常见的操作系统？",
+      "options": ["A. Windows", "B. Linux", "C. Python", "D. macOS"],
+      "answer": "C"
+    },
+    {
+      "question": "在Python中，用于输出的函数是？",
+      "options": ["A. input()", "B. print()", "C. output()", "D. display()"],
+      "answer": "B"
+    },
+    {
+      "question": "下列哪种设备属于存储设备？",
+      "options": ["A. 显示器", "B. 键盘", "C. 硬盘", "D. 音箱"],
+      "answer": "C"
+    },
+    {
+      "question": "下列哪个是正确的IP地址格式？",
+      "options": ["A. 192.168.1", "B. 192.168.1.1", "C. 192.168.1.1.1", "D. 192.168.1.256"],
+      "answer": "B"
+    },
+    {
+      "question": "在编程中，循环结构的作用是？",
+      "options": ["A. 跳过某些代码", "B. 重复执行代码", "C. 选择执行代码", "D. 结束程序"],
+      "answer": "B"
+    },
+    {
+      "question": "下列哪个不是编程语言的分类？",
+      "options": ["A. 机器语言", "B. 汇编语言", "C. 高级语言", "D. 文字语言"],
+      "answer": "D"
+    },
+    {
+      "question": "在Scratch中，事件积木的作用是？",
+      "options": ["A. 移动角色", "B. 响应触发事件", "C. 改变外观", "D. 播放声音"],
+      "answer": "B"
+    },
+    {
+      "question": "下列哪个是正确的URL格式？",
+      "options": ["A. http://www.example.com", "B. www.example.com", "C. example.com", "D. http:example.com"],
+      "answer": "A"
+    },
+    {
+      "question": "计算机病毒的主要特征是？",
+      "options": ["A. 提高系统性能", "B. 自我复制和传播", "C. 保护数据安全", "D. 修复系统漏洞"],
+      "answer": "B"
+    },
+    {
+      "question": "在Python中，列表的数据类型是？",
+      "options": ["A. str", "B. int", "C. list", "D. float"],
+      "answer": "C"
+    },
+    {
+      "question": "下列哪个不是搜索引擎？",
+      "options": ["A. 百度", "B. 谷歌", "C. Word", "D. 必应"],
+      "answer": "C"
+    },
+    {
+      "question": "在编程中，注释的作用是？",
+      "options": ["A. 执行代码", "B. 解释说明代码", "C. 生成随机数", "D. 连接数据库"],
+      "answer": "B"
+    },
+    {
+      "question": "下列哪个是移动操作系统？",
+      "options": ["A. Windows", "B. Android", "C. Linux", "D. macOS"],
+      "answer": "B"
+    },
+    {
+      "question": "在Python中，用于输入的函数是？",
+      "options": ["A. print()", "B. input()", "C. get()", "D. read()"],
+      "answer": "B"
+    },
+    {
+      "question": "下列哪个是图像文件格式？",
+      "options": ["A. MP3", "B. JPG", "C. TXT", "D. EXE"],
+      "answer": "B"
+    },
+    {
+      "question": "增强现实（AR）和虚拟现实（VR）的主要区别是？",
+      "options": ["A. 完全相同", "B. AR叠加现实，VR完全虚拟", "C. VR叠加现实，AR完全虚拟", "D. 没有区别"],
+      "answer": "B"
+    },
+    {
+      "question": "在Scratch中，运动积木的作用是？",
+      "options": ["A. 播放声音", "B. 改变角色位置", "C. 显示背景", "D. 响应事件"],
+      "answer": "B"
+    },
+    {
+      "question": "下列哪个是正确的电子邮件格式？",
+      "options": ["A. user@example", "B. user@example.com", "C. user@.com", "D. @example.com"],
+      "answer": "B"
+    },
+    {
+      "question": "计算机硬件中，CPU的作用是？",
+      "options": ["A. 存储数据", "B. 处理数据", "C. 显示图像", "D. 输入数据"],
+      "answer": "B"
+    },
+    {
+      "question": "在编程中，条件语句的作用是？",
+      "options": ["A. 重复执行", "B. 根据条件选择执行", "C. 跳出循环", "D. 结束程序"],
+      "answer": "B"
+    }
+  ],
+  "judgeQuestions": [
+    {
+      "question": "计算机只能执行人类编写的程序。",
+      "answer": true
+    },
+    {
+      "question": "算法就是解决问题的步骤和方法。",
+      "answer": true
+    },
+    {
+      "question": "3D打印可以打印任何物体。",
+      "answer": false
+    },
+    {
+      "question": "Python是一种高级编程语言。",
+      "answer": true
+    },
+    {
+      "question": "互联网和万维网是同一个概念。",
+      "answer": false
+    },
+    {
+      "question": "人工智能可以完全替代人类的所有工作。",
+      "answer": false
+    },
+    {
+      "question": "编程就是让计算机按照我们的想法工作。",
+      "answer": true
+    },
+    {
+      "question": "所有的软件都需要联网才能使用。",
+      "answer": false
+    },
+    {
+      "question": "数据在计算机中都是以二进制形式存储的。",
+      "answer": true
+    },
+    {
+      "question": "机器人一定长得像人。",
+      "answer": false
+    },
+    {
+      "question": "在Scratch中，每个角色都有自己的坐标系统。",
+      "answer": true
+    },
+    {
+      "question": "计算机内存中的数据断电后会丢失。",
+      "answer": true
+    },
+    {
+      "question": "硬盘属于内存设备。",
+      "answer": false
+    },
+    {
+      "question": "在Python中，变量名可以包含空格。",
+      "answer": false
+    },
+    {
+      "question": "操作系统是计算机的核心软件。",
+      "answer": true
+    },
+    {
+      "question": "在Scratch中，可以同时播放多个声音。",
+      "answer": true
+    },
+    {
+      "question": "计算机病毒只能通过网络传播。",
+      "answer": false
+    },
+    {
+      "question": "在编程中，缩进对程序运行没有影响。",
+      "answer": false
+    },
+    {
+      "question": "3D打印机可以打印食物。",
+      "answer": true
+    },
+    {
+      "question": "在Scratch中，背景也可以编程。",
+      "answer": true
+    }
+  ]
+}

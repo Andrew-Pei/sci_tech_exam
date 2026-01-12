@@ -429,32 +429,69 @@
             let judgeWrongCount = 0;
             let judgeUnansweredCount = 0;
 
+            // 记录每道题的答题详情
+            const answerDetails = [];
+
             // 检查选择题
             choiceQuestions.forEach((q, index) => {
                 const selected = document.querySelector(`input[name="choice${index}"]:checked`);
+                const questionId = `choice_${index}`;
+                let studentAnswer = null;
+                let isCorrect = false;
+
                 if (selected) {
+                    studentAnswer = selected.value;
                     if (selected.value === q.answer) {
                         choiceCorrectCount++;
+                        isCorrect = true;
                     } else {
                         choiceWrongCount++;
                     }
                 } else {
                     choiceUnansweredCount++;
                 }
+
+                answerDetails.push({
+                    questionId: questionId,
+                    questionType: 'choice',
+                    questionIndex: index,
+                    question: q.question,
+                    studentAnswer: studentAnswer,
+                    correctAnswer: q.answer,
+                    isCorrect: isCorrect,
+                    isUnanswered: !selected
+                });
             });
 
             // 检查判断题
             judgeQuestions.forEach((q, index) => {
                 const selected = document.querySelector(`input[name="judge${index}"]:checked`);
+                const questionId = `judge_${index}`;
+                let studentAnswer = null;
+                let isCorrect = false;
+
                 if (selected) {
+                    studentAnswer = selected.value;
                     if (selected.value === String(q.answer)) {
                         judgeCorrectCount++;
+                        isCorrect = true;
                     } else {
                         judgeWrongCount++;
                     }
                 } else {
                     judgeUnansweredCount++;
                 }
+
+                answerDetails.push({
+                    questionId: questionId,
+                    questionType: 'judge',
+                    questionIndex: index,
+                    question: q.question,
+                    studentAnswer: studentAnswer,
+                    correctAnswer: String(q.answer),
+                    isCorrect: isCorrect,
+                    isUnanswered: !selected
+                });
             });
 
             const correctCount = choiceCorrectCount + judgeCorrectCount;
@@ -481,6 +518,7 @@
                 correctCount: correctCount,
                 wrongCount: wrongCount,
                 unansweredCount: unansweredCount,
+                answerDetails: answerDetails,
                 submitTime: new Date().toISOString(),
                 timeUsed: examTime - timeRemaining
             };

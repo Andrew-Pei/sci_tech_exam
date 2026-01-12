@@ -329,6 +329,210 @@ app.get('/api/stats', authenticateAdmin, (req, res) => {
     }
 });
 
+// 获取单个学生的错题详情API
+app.get('/api/scores/:studentNumber/details', authenticateAdmin, (req, res) => {
+    try {
+        const { studentNumber } = req.params;
+        
+        if (!studentNumber) {
+            return res.status(400).json({ error: '学号不能为空' });
+        }
+        
+        const scores = safeReadFile();
+        const studentScore = scores.find(s => s.studentNumber === studentNumber);
+        
+        if (!studentScore) {
+            return res.status(404).json({ error: '未找到该学号的成绩' });
+        }
+
+        // 如果没有答题详情，返回提示
+        if (!studentScore.answerDetails || studentScore.answerDetails.length === 0) {
+            return res.json({
+                studentInfo: {
+                    name: studentScore.name,
+                    className: studentScore.className,
+                    studentNumber: studentScore.studentNumber,
+                    score: studentScore.score,
+                    submitTime: studentScore.submitTime
+                },
+                wrongQuestions: [],
+                unansweredQuestions: [],
+                hasDetails: false
+            });
+        }
+
+        // 筛选出错题和未答题
+        const wrongQuestions = studentScore.answerDetails.filter(q => !q.isCorrect && !q.isUnanswered);
+        const unansweredQuestions = studentScore.answerDetails.filter(q => q.isUnanswered);
+
+        res.json({
+            studentInfo: {
+                name: studentScore.name,
+                className: studentScore.className,
+                studentNumber: studentScore.studentNumber,
+                score: studentScore.score,
+                correctCount: studentScore.correctCount,
+                wrongCount: studentScore.wrongCount,
+                unansweredCount: studentScore.unansweredCount,
+                submitTime: studentScore.submitTime
+            },
+            wrongQuestions: wrongQuestions,
+            unansweredQuestions: unansweredQuestions,
+            hasDetails: true
+        });
+    } catch (error) {
+        console.error('获取错题详情错误：', error);
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+// 获取所有题目的错误率统计API
+app.get('/api/analysis/question-stats', authenticateAdmin, (req, res) => {
+    try {
+        const scores = safeReadFile();
+        
+        if (scores.length === 0) {
+            return res.json({
+                totalStudents: 0,
+                questionStats: []
+            });
+        }
+
+        // 只统计有答题详情的成绩
+        const scoresWithDetails = scores.filter(s => s.answerDetails && s.answerDetails.length > 0);
+        
+        if (scoresWithDetails.length === 0) {
+            return res.json({
+                totalStudents: scores.length,
+                questionStats: [],
+                message: '暂无答题详情数据'
+            });
+        }
+
+        // 统计每道题的错误情况
+        const questionMap = new Map();
+
+        scoresWithDetails.forEach(score => {
+            if (score.answerDetails) {
+                score.answerDetails.forEach(detail => {
+                    const key = detail.questionId;
+                    if (!questionMap.has(key)) {
+                        questionMap.set(key, {
+                            questionId: key,
+                            questionType: detail.questionType,
+                            question: detail.question,
+                            correctAnswer: detail.correctAnswer,
+                            totalAttempts: 0,
+                            correctCount: 0,
+                            wrongCount: 0,
+                            unansweredCount: 0,
+                            wrongRate: 0,
+                            studentAnswers: []
+                        });
+                    }
+
+                    const stat = questionMap.get(key);
+                    stat.totalAttempts++;
+
+                    if (detail.isCorrect) {
+                        stat.correctCount++;
+                    } else if (detail.isUnanswered) {
+                        stat.unansweredCount++;
+                    } else {
+                        stat.wrongCount++;
+                        // 记录错误答案（用于分析常见错误）
+                        if (detail.studentAnswer) {
+                            stat.studentAnswers.push({
+                                studentNumber: score.studentNumber,
+                                studentName: score.name,
+                                answer: detail.studentAnswer
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+        // 计算错误率并排序
+        const questionStats = Array.from(questionMap.values()).map(stat => {
+            stat.wrongRate = ((stat.wrongCount / stat.totalAttempts) * 100).toFixed(2);
+            return stat;
+        });
+
+        // 按错误率降序排序
+        questionStats.sort((a, b) => parseFloat(b.wrongRate) - parseFloat(a.wrongRate));
+
+        res.json({
+            totalStudents: scoresWithDetails.length,
+            questionStats: questionStats
+        });
+    } catch (error) {
+        console.error('获取题目统计错误：', error);
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+// 获取班级错题分析API
+app.get('/api/analysis/class-stats', authenticateAdmin, (req, res) => {
+    try {
+        const scores = safeReadFile();
+        
+        if (scores.length === 0) {
+            return res.json({
+                classStats: []
+            });
+        }
+
+        // 按班级分组统计
+        const classMap = new Map();
+
+        scores.forEach(score => {
+            const className = score.className || '未知班级';
+            if (!classMap.has(className)) {
+                classMap.set(className, {
+                    className: className,
+                    studentCount: 0,
+                    totalScore: 0,
+                    averageScore: 0,
+                    totalWrong: 0,
+                    totalUnanswered: 0,
+                    students: []
+                });
+            }
+
+            const classStat = classMap.get(className);
+            classStat.studentCount++;
+            classStat.totalScore += score.score;
+            classStat.totalWrong += score.wrongCount || 0;
+            classStat.totalUnanswered += score.unansweredCount || 0;
+            
+            classStat.students.push({
+                name: score.name,
+                studentNumber: score.studentNumber,
+                score: score.score,
+                wrongCount: score.wrongCount || 0,
+                unansweredCount: score.unansweredCount || 0
+            });
+        });
+
+        // 计算平均分
+        const classStats = Array.from(classMap.values()).map(stat => {
+            stat.averageScore = (stat.totalScore / stat.studentCount).toFixed(2);
+            return stat;
+        });
+
+        // 按班级名称排序
+        classStats.sort((a, b) => a.className.localeCompare(b.className, 'zh-CN'));
+
+        res.json({
+            classStats: classStats
+        });
+    } catch (error) {
+        console.error('获取班级统计错误：', error);
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
 // 导出app实例以支持测试
 module.exports = app;
 

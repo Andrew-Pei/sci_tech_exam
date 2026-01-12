@@ -248,23 +248,45 @@
 
     <script>
         let allScores = [];
-        const ADMIN_PASSWORD = 'admin123'; // 与服务器端保持一致
+
+        // 检查用户是否已登录
+        function checkAuth() {
+            const token = sessionStorage.getItem('adminToken');
+            if (!token) {
+                // 如果没有令牌，重定向到登录页面
+                window.location.href = '/admin_login.html';
+                return false;
+            }
+            return token;
+        }
 
         // 获取认证头
         function getAuthHeader() {
+            const token = checkAuth();
+            if (!token) return null;
+            
             return {
-                'Authorization': `Bearer ${ADMIN_PASSWORD}`,
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             };
         }
 
         // 加载成绩数据
         function loadScores() {
+            const headers = getAuthHeader();
+            if (!headers) return;
+
             fetch('/api/scores', {
-                headers: getAuthHeader()
+                headers: headers
             })
                 .then(response => {
                     if (!response.ok) {
+                        if (response.status === 401 || response.status === 403) {
+                            // 令牌无效或过期，重定向到登录页面
+                            sessionStorage.removeItem('adminToken');
+                            window.location.href = '/admin_login.html';
+                            return;
+                        }
                         return response.json().then(err => {
                             throw new Error(err.error || '加载失败');
                         });
@@ -278,17 +300,30 @@
                 })
                 .catch(error => {
                     console.error('加载成绩失败：', error);
-                    alert('加载成绩失败：' + error.message);
+                    if (error.message.includes('401') || error.message.includes('403')) {
+                        sessionStorage.removeItem('adminToken');
+                        window.location.href = '/admin_login.html';
+                    } else {
+                        alert('加载成绩失败：' + error.message);
+                    }
                 });
         }
 
         // 加载统计信息
         function loadStats() {
+            const headers = getAuthHeader();
+            if (!headers) return;
+
             fetch('/api/stats', {
-                headers: getAuthHeader()
+                headers: headers
             })
                 .then(response => {
                     if (!response.ok) {
+                        if (response.status === 401 || response.status === 403) {
+                            sessionStorage.removeItem('adminToken');
+                            window.location.href = '/admin_login.html';
+                            return;
+                        }
                         return response.json().then(err => {
                             throw new Error(err.error || '加载失败');
                         });
@@ -304,6 +339,10 @@
                 })
                 .catch(error => {
                     console.error('加载统计信息失败：', error);
+                    if (error.message.includes('401') || error.message.includes('403')) {
+                        sessionStorage.removeItem('adminToken');
+                        window.location.href = '/admin_login.html';
+                    }
                 });
         }
 
@@ -367,12 +406,20 @@
         // 删除成绩
         function deleteScore(studentNumber) {
             if (confirm('确定要删除该学生的成绩吗？')) {
+                const headers = getAuthHeader();
+                if (!headers) return;
+
                 fetch(`/api/scores/${studentNumber}`, {
                     method: 'DELETE',
-                    headers: getAuthHeader()
+                    headers: headers
                 })
                 .then(response => {
                     if (!response.ok) {
+                        if (response.status === 401 || response.status === 403) {
+                            sessionStorage.removeItem('adminToken');
+                            window.location.href = '/admin_login.html';
+                            return;
+                        }
                         return response.json().then(err => {
                             throw new Error(err.error || '删除失败');
                         });
@@ -385,7 +432,12 @@
                 })
                 .catch(error => {
                     console.error('删除失败：', error);
-                    alert('删除失败：' + error.message);
+                    if (error.message.includes('401') || error.message.includes('403')) {
+                        sessionStorage.removeItem('adminToken');
+                        window.location.href = '/admin_login.html';
+                    } else {
+                        alert('删除失败：' + error.message);
+                    }
                 });
             }
         }
@@ -420,12 +472,20 @@
         function clearAllScores() {
             if (confirm('确定要清空所有成绩吗？此操作不可恢复！')) {
                 if (confirm('再次确认：真的要清空所有成绩吗？')) {
+                    const headers = getAuthHeader();
+                    if (!headers) return;
+
                     fetch('/api/scores', {
                         method: 'DELETE',
-                        headers: getAuthHeader()
+                        headers: headers
                     })
                     .then(response => {
                         if (!response.ok) {
+                            if (response.status === 401 || response.status === 403) {
+                                sessionStorage.removeItem('adminToken');
+                                window.location.href = '/admin_login.html';
+                                return;
+                            }
                             return response.json().then(err => {
                                 throw new Error(err.error || '清空失败');
                             });
@@ -438,16 +498,42 @@
                     })
                     .catch(error => {
                         console.error('清空失败：', error);
-                        alert('清空失败：' + error.message);
+                        if (error.message.includes('401') || error.message.includes('403')) {
+                            sessionStorage.removeItem('adminToken');
+                            window.location.href = '/admin_login.html';
+                        } else {
+                            alert('清空失败：' + error.message);
+                        }
                     });
                 }
             }
         }
 
-        // 页面加载时自动加载数据
+        // 页面加载时检查认证并加载数据
         window.onload = function() {
-            loadScores();
+            if (checkAuth()) {
+                loadScores();
+            }
         };
+
+        // 添加登出功能
+        function logout() {
+            sessionStorage.removeItem('adminToken');
+            window.location.href = '/admin_login.html';
+        }
+
+        // 添加登出按钮到页面（动态添加）
+        window.addEventListener('load', function() {
+            const container = document.querySelector('.container');
+            if (container) {
+                const logoutBtn = document.createElement('button');
+                logoutBtn.className = 'btn btn-danger';
+                logoutBtn.textContent = '🚪 退出登录';
+                logoutBtn.style.cssText = 'position: absolute; top: 20px; right: 20px;';
+                logoutBtn.onclick = logout;
+                container.appendChild(logoutBtn);
+            }
+        });
     </script>
 </body>
 </html>

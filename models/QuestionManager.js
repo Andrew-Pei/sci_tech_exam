@@ -158,6 +158,11 @@ class QuestionManager {
      * @returns {Array<Question>} 随机题目数组
      */
     getRandomQuestions(count, type = 'all') {
+        // 如果请求的数量小于等于0，返回空数组
+        if (count <= 0) {
+            return [];
+        }
+
         let questionPool;
         
         switch (type) {

@@ -24,6 +24,10 @@ class ChoiceQuestion extends Question {
      * @returns {boolean} 是否正确
      */
     validateAnswer(userAnswer) {
+        // 如果用户答案不是字符串，则无法进行比较，直接返回 false
+        if (typeof userAnswer !== 'string') {
+            return false;
+        }
         return userAnswer.toUpperCase() === this.correctAnswer.toUpperCase();
     }
 

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,8 +19,9 @@ const QUESTIONS_FILE = path.join(__dirname, 'questions.json');
 const SCORES_FILE = path.join(__dirname, 'scores.json');
 const BACKUP_FILE = path.join(__dirname, 'scores_backup.json');
 
-// 简单的身份验证密钥
-const ADMIN_PASSWORD = 'admin123'; // 生产环境应使用环境变量
+// 从环境变量获取密码，如果不存在则使用默认值（生产环境应始终使用环境变量）
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+const JWT_SECRET = process.env.JWT_SECRET || 'exam_system_secret_key'; // 生产环境应使用更强的密钥
 
 // 文件锁，防止并发写入
 let fileLock = false;
@@ -32,11 +34,49 @@ if (!fs.existsSync(SCORES_FILE)) {
 // 管理员认证中间件
 function authenticateAdmin(req, res, next) {
     const authHeader = req.headers['authorization'];
-    if (!authHeader || authHeader !== `Bearer ${ADMIN_PASSWORD}`) {
-        return res.status(401).json({ error: '未授权访问' });
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+    if (!token) {
+        return res.status(401).json({ error: '未授权访问：缺少令牌' });
     }
-    next();
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: '令牌无效或已过期' });
+        }
+        req.user = user;
+        next();
+    });
 }
+
+// 登录接口
+app.post('/api/login', (req, res) => {
+    const { password } = req.body;
+    
+    if (!password) {
+        return res.status(400).json({ error: '密码不能为空' });
+    }
+
+    if (password !== ADMIN_PASSWORD) {
+        return res.status(401).json({ error: '密码错误' });
+    }
+
+    // 创建JWT令牌，设置过期时间为12小时
+    const token = jwt.sign(
+        { 
+            username: 'admin', 
+            role: 'admin',
+            exp: Math.floor(Date.now() / 1000) + (12 * 60 * 60) // 12小时后过期
+        }, 
+        JWT_SECRET
+    );
+
+    res.json({ 
+        success: true, 
+        token,
+        message: '登录成功' 
+    });
+});
 
 // 安全的文件读取
 function safeReadFile() {
@@ -289,9 +329,14 @@ app.get('/api/stats', authenticateAdmin, (req, res) => {
     }
 });
 
-// 启动服务器
-app.listen(PORT, () => {
-    console.log(`考试系统服务器运行在端口 ${PORT}`);
-    console.log(`学生考试页面：/index.html`);
-    console.log(`教师管理后台：/admin.html`);
-});
+// 导出app实例以支持测试
+module.exports = app;
+
+// 只在直接运行此文件时才启动服务器（而不是被require时）
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`考试系统服务器运行在端口 ${PORT}`);
+        console.log(`学生考试页面：/index.html`);
+        console.log(`教师管理后台：/admin_login.html`); // 更新登录页面路径
+    });
+}

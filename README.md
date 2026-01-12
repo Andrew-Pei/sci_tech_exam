@@ -2,6 +2,15 @@
 
 一个基于 Node.js 和 Express 的在线考试系统，支持学生在线答题和教师管理后台。
 
+## 🚀 在线访问
+
+**部署地址**: https://sci-tech-exam.onrender.com
+
+**学生考试页面**: https://sci-tech-exam.onrender.com/index.html  
+**教师管理后台**: https://sci-tech-exam.onrender.com/admin.html
+
+**管理员密码**: `admin123`
+
 ## 功能特性
 
 ### 学生端

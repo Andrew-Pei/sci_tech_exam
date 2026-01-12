@@ -56,8 +56,8 @@
       "answer": "C"
     },
     {
-      "question": "在Python中，用于输出的函数是？",
-      "options": ["A. input()", "B. print()", "C. output()", "D. display()"],
+      "question": "计算机的基本工作流程是？",
+      "options": ["A. 输入-输出-处理", "B. 输入-处理-输出", "C. 处理-输入-输出", "D. 输出-处理-输入"],
       "answer": "B"
     },
     {
@@ -66,9 +66,9 @@
       "answer": "C"
     },
     {
-      "question": "下列哪个是正确的IP地址格式？",
-      "options": ["A. 192.168.1", "B. 192.168.1.1", "C. 192.168.1.1.1", "D. 192.168.1.256"],
-      "answer": "B"
+      "question": "互联网的常见应用不包括？",
+      "options": ["A. 发送电子邮件", "B. 在线学习", "C. 播放单机游戏", "D. 视频聊天"],
+      "answer": "C"
     },
     {
       "question": "在编程中，循环结构的作用是？",
@@ -86,9 +86,9 @@
       "answer": "B"
     },
     {
-      "question": "下列哪个是正确的URL格式？",
-      "options": ["A. http://www.example.com", "B. www.example.com", "C. example.com", "D. http:example.com"],
-      "answer": "A"
+      "question": "以下哪项是网络礼仪的基本要求？",
+      "options": ["A. 随意转发未经核实的信息", "B. 使用文明用语", "C. 随意泄露他人隐私", "D. 随意下载盗版软件"],
+      "answer": "B"
     },
     {
       "question": "计算机病毒的主要特征是？",
@@ -96,9 +96,9 @@
       "answer": "B"
     },
     {
-      "question": "在Python中，列表的数据类型是？",
-      "options": ["A. str", "B. int", "C. list", "D. float"],
-      "answer": "C"
+      "question": "在计算机中，文件夹的作用是？",
+      "options": ["A. 存储单个文件", "B. 整理和管理文件", "C. 运行程序", "D. 连接网络"],
+      "answer": "B"
     },
     {
       "question": "下列哪个不是搜索引擎？",
@@ -116,9 +116,9 @@
       "answer": "B"
     },
     {
-      "question": "在Python中，用于输入的函数是？",
-      "options": ["A. print()", "B. input()", "C. get()", "D. read()"],
-      "answer": "B"
+      "question": "以下哪种行为符合网络道德规范？",
+      "options": ["A. 随意下载盗版软件", "B. 传播他人隐私信息", "C. 尊重他人知识产权", "D. 发布虚假信息"],
+      "answer": "C"
     },
     {
       "question": "下列哪个是图像文件格式？",
@@ -136,9 +136,9 @@
       "answer": "B"
     },
     {
-      "question": "下列哪个是正确的电子邮件格式？",
-      "options": ["A. user@example", "B. user@example.com", "C. user@.com", "D. @example.com"],
-      "answer": "B"
+      "question": "以下关于网络安全的说法正确的是？",
+      "options": ["A. 网络病毒只会影响电脑性能", "B. 安装杀毒软件就绝对安全", "C. 定期更新系统补丁有助于安全", "D. 公共WiFi绝对安全"],
+      "answer": "C"
     },
     {
       "question": "计算机硬件中，CPU的作用是？",
@@ -193,7 +193,7 @@
       "answer": false
     },
     {
-      "question": "在Scratch中，每个角色都有自己的坐标系统。",
+      "question": "计算机可以帮我们处理各种信息。",
       "answer": true
     },
     {
@@ -205,8 +205,8 @@
       "answer": false
     },
     {
-      "question": "在Python中，变量名可以包含空格。",
-      "answer": false
+      "question": "我们可以利用计算机进行学习和娱乐。",
+      "answer": true
     },
     {
       "question": "操作系统是计算机的核心软件。",
@@ -221,15 +221,15 @@
       "answer": false
     },
     {
-      "question": "在编程中，缩进对程序运行没有影响。",
-      "answer": false
+      "question": "保护个人隐私信息在网络中很重要。",
+      "answer": true
     },
     {
       "question": "3D打印机可以打印食物。",
       "answer": true
     },
     {
-      "question": "在Scratch中，背景也可以编程。",
+      "question": "在使用计算机时要注意保护眼睛。",
       "answer": true
     }
   ]

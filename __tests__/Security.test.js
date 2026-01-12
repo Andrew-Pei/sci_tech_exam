@@ -121,18 +121,19 @@ describe('考试系统API安全测试', () => {
             const examData = {
                 name: '测试学生',
                 className: '初一1班',
-                studentNumber: 'test001',
+                studentNumber: 'test' + Date.now(), // 使用时间戳生成唯一学号（只包含字母和数字）
                 score: 85,
                 correctCount: 17,
                 wrongCount: 3,
+                unansweredCount: 30, // 添加未答题数
                 timeUsed: 1200
             };
 
             const response = await request(app)
                 .post('/api/submit')
-                .send(examData)
-                .expect(200);
+                .send(examData);
 
+            expect(response.status).toBe(200);
             expect(response.body.success).toBe(true);
             expect(response.body.message).toBe('成绩提交成功');
         });
@@ -141,7 +142,7 @@ describe('考试系统API安全测试', () => {
             const invalidData = {
                 name: '', // 空姓名
                 className: '初一1班',
-                studentNumber: 'test002',
+                studentNumber: 'testinvalid' + Date.now(),
                 score: 85,
                 correctCount: 17,
                 wrongCount: 3,

@@ -187,6 +187,64 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
+        .submit-btn:disabled {
+            background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submitting {
+            position: relative;
+        }
+
+        .submitting::after {
+            content: '提交中...';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .error-message {
+            display: none;
+            background: #fee;
+            border: 2px solid #f87171;
+            color: #dc2626;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .error-message h2 {
+            margin-bottom: 15px;
+        }
+
+        .error-message p {
+            margin: 10px 0;
+        }
+
+        .retry-btn {
+            margin-top: 15px;
+            padding: 12px 30px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .retry-btn:hover {
+            background: #b91c1c;
+        }
+
         .result {
             display: none;
             text-align: center;
@@ -292,6 +350,13 @@
                 <p>📊 总分：<span id="totalScore">0</span>/100 分</p>
             </div>
         </div>
+
+        <div class="error-message" id="errorMessage">
+            <h2>⚠️ 提交失败</h2>
+            <p id="errorText"></p>
+            <p>请检查网络连接后点击下方按钮重试</p>
+            <button class="retry-btn" onclick="retrySubmit()">🔄 重新提交</button>
+        </div>
     </div>
 
     <script>
@@ -339,6 +404,8 @@
         const examTime = 1800;
         let timeRemaining = examTime;
         let timerInterval;
+        let isSubmitting = false;  // 防止重复提交
+        let currentExamData = null;  // 保存当前考试数据，用于重试
 
         // 渲染选择题
         function renderChoiceQuestions() {
@@ -412,6 +479,12 @@
 
         // 提交答案
         function submitExam() {
+            // 防止重复提交
+            if (isSubmitting) {
+                console.log('正在提交中，请勿重复点击');
+                return;
+            }
+
             // 获取学生信息
             const name = document.getElementById('studentName').value;
             const className = document.getElementById('studentClass').value;
@@ -523,6 +596,15 @@
                 timeUsed: examTime - timeRemaining
             };
 
+            // 保存数据用于重试
+            currentExamData = examData;
+
+            // 设置提交状态
+            isSubmitting = true;
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.classList.add('submitting');
+
             // 提交到后端
             fetch('/api/submit', {
                 method: 'POST',
@@ -541,6 +623,7 @@
             })
             .then(data => {
                 console.log('成绩提交成功：', data);
+                isSubmitting = false;  // 重置状态
                 if (data.submitCount && data.submitCount > 1) {
                     alert(`成绩更新成功！这是第 ${data.submitCount} 次提交（最多3次）`);
                 } else {
@@ -550,9 +633,66 @@
             })
             .catch(error => {
                 console.error('提交失败：', error);
-                alert('成绩提交失败：' + error.message + '\n但你的成绩已计算完成。');
-                displayResult(examData);
+                isSubmitting = false;  // 重置状态
+                const submitBtn = document.querySelector('.submit-btn');
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('submitting');
+
+                // 显示错误界面，不显示成功界面
+                showError(error.message || '网络错误，请重试');
             });
+        }
+
+        // 显示错误界面
+        function showError(message) {
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('examForm').style.display = 'none';
+        }
+
+        // 重试提交
+        function retrySubmit() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('examForm').style.display = 'block';
+
+            if (currentExamData) {
+                // 设置提交状态
+                isSubmitting = true;
+                const submitBtn = document.querySelector('.submit-btn');
+                submitBtn.disabled = true;
+                submitBtn.classList.add('submitting');
+
+                // 重新提交
+                fetch('/api/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(currentExamData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.error || '提交失败');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('成绩提交成功：', data);
+                    isSubmitting = false;
+                    alert('重试提交成功！');
+                    displayResult(currentExamData);
+                })
+                .catch(error => {
+                    console.error('重试提交失败：', error);
+                    isSubmitting = false;
+                    const submitBtn = document.querySelector('.submit-btn');
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('submitting');
+                    showError(error.message || '网络错误，请重试');
+                });
+            }
         }
 
         // 显示结果
